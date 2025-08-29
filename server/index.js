@@ -18,6 +18,7 @@ async function start({
   sslCert,
   sslKey,
   basePath = '/',
+  secret,
 } = {}) {
   domain = domain || 'localhost:' + port;
   if (!endWith(basePath, '/')) {
@@ -25,7 +26,7 @@ async function start({
   }
 
   const app = new Koa();
-  const wss = new WebSocketServer();
+  const wss = new WebSocketServer({ secret });
 
   app.use(compress()).use(router(wss.channelManager, domain, cdn, basePath));
 
