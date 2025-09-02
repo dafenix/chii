@@ -4,7 +4,7 @@ const ChannelManager = require('./ChannelManager');
 const query = require('licia/query');
 
 module.exports = class WebSocketServer {
-  constructor({ secret }) {
+  constructor( secrets ) {
     this.channelManager = new ChannelManager();
 
     const wss = (this._wss = new WebSocket.Server({ noServer: true }));
@@ -14,8 +14,11 @@ module.exports = class WebSocketServer {
       if (type === 'target') {
         const { id, chiiUrl, title, favicon, secret: targetSecret } = ws;
 
-        if (secret && secret !== targetSecret) {
-          console.log('wrong secret provided');
+        const isSecretRequired = Array.isArray(secrets) && secrets.length > 0;
+        const isSecretValid = targetSecret && secrets.includes(targetSecret);
+
+        if (isSecretRequired && !isSecretValid) {
+          console.log('wrong or no secret provided');
           ws.close();
         }
 

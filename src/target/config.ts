@@ -64,5 +64,5 @@ export {
   rtc,
   cdn,
   id,
-  secret,
+  secret
 };
